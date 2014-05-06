@@ -1,0 +1,28 @@
+<% 
+  [
+    [@filter, "filter", ["INPUT", "OUTPUT", "FORWARD"] ],
+    [@nat, "nat", ["PREROUTING", "OUTPUT", "POSTROUTING"] ]
+  ].each do |arr| # 1st nest 
+    table = arr[0]
+    table_name = arr[1]
+    chains = arr[2]
+%>
+<% if table then # 2nd nest %>
+*<%= table_name %>
+<% chains.each do |chain| # 3rd nest %>
+<% if table[chain] # 4th nest %>
+-F <%= chain %>
+-P <%= chain %> <%= table[chain]["policy"] || "DROP" %>
+<% (table[chain]["rules"] || []).each do |rule| # 5th nest %>
+<% 
+rule = rule.gsub(/ +/, " ")
+rule = "-A %s %s" % [chain, rule] if !rule.index("-A %s" % chain)
+%>
+<%= rule %>
+<% end # 5th nest %>
+<% end # 4th nest %>
+
+<% end # 3rd nest %>
+COMMIT
+<% end # 2rd nest %>
+<% end # 1rd nest %>

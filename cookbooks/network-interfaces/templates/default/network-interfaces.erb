@@ -1,0 +1,15 @@
+# created by recipe network-interfaces
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+<% @interfaces.each do |iface, config| %>
+auto <%= iface %>
+allow-hotplug <%= iface %>
+iface <%= iface %> inet <%= config["method"] %>
+<% (config["options"] || {}).each do |k,v| %>
+    <%= k %> <%= v %>
+<% end %>
+
+<% end %>

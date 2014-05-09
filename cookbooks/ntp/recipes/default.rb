@@ -15,9 +15,9 @@ template "/etc/ntp.conf" do
     group "root"
     mode 0644
     variables({
-            :panic => node[:cookbook_name]['panic'],
-            :servers => node[:cookbook_name]['servers'],
-            :broadcast => node[:cookbook_name]['broadcast']
+            :panic => node[cookbook_name]['panic'],
+            :servers => node[cookbook_name]['servers'],
+            :broadcast => node[cookbook_name]['broadcast']
         })
     action :create
 end

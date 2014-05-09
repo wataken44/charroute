@@ -21,8 +21,8 @@ template "/etc/iptables/rules.v4" do
     group "root"
     mode 0644
     variables({
-            :filter => node["iptables"]["filter"],
-            :nat => node["iptables"]["nat"]
+            :filter => node[cookbook_name]["filter"],
+            :nat => node[cookbook_name]["nat"]
         })
     action :create
 end

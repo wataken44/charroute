@@ -11,7 +11,7 @@ package "ssh"
 
 
 template "/etc/ssh/sshd_config" do
-    var = node[:cookbook_name]
+    var = node[cookbook_name]
 
     source "sshd_config.erb"
     owner "root"

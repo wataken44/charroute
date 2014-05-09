@@ -12,7 +12,7 @@ template "/etc/sysctl.conf" do
     owner "root"
     group "root"
     mode 0644
-    variables(:variables => node["sysctl"]["variables"])
+    variables(:variables => node[cookbook_name]["variables"])
     action :create
 end
 

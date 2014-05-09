@@ -12,7 +12,7 @@ template "/etc/network/interfaces" do
     owner "root"
     group "root"
     mode 0644
-    variables(:interfaces => node["network-interfaces"]["interfaces"])
+    variables(:interfaces => node[cookbook_name]["interfaces"])
     action :create
 end
 

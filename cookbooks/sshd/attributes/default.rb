@@ -1,7 +1,8 @@
 
-default[cookbook_name] = (default[cookbook_name] || {}).update({
-        :port => 22,
-        :listen_address => nil,
-        :permit_root_login => 'no',
-        :password_authentication => 'yes'
-    })
+cookbook_name = 'sshd'
+default[cookbook_name] = {
+    'port' => 22,
+    'listen-address' => nil,
+    'permit-root-login' => 'no',
+    'password-authentication' => 'yes'
+}

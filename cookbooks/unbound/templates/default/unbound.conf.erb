@@ -1,0 +1,13 @@
+
+server:
+<% @interfaces.each do |interface| %>
+  interface: <%= interface %>
+<% end %>
+<% ['allow', 'deny'].each do |action| %>
+<% (@access_control[action] || []).each do |ac| %>
+  access-control: <%= ac %> <%= action %>
+<% end %>
+<% end %>
+<% if @unwanted_reply_threshold %>
+  unwanted-reply-threshold: <%= @unwanted_reply_threshold %>
+<% end %>

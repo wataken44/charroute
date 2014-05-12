@@ -1,0 +1,31 @@
+##
+# Section 1
+#
+# Stuff to configure...
+
+user <%= @user %>
+pty "/usr/sbin/pppoe -I <%= @interface %> -T 80 -m <%= @mss ? @mss : 1452 %>"
+
+<% if @no_ip_default %>noipdefault<% end %>
+<% if @use_peer_dns %>usepeerdns<% end %>
+<% if @default_route %>defaultroute<% end %>
+
+
+# You shouldn't need to change these options...
+
+hide-password
+lcp-echo-interval 20
+lcp-echo-failure 3
+# Override any connect script that may have been set in /etc/ppp/options.
+connect /bin/true
+noauth
+persist
+mtu <%= @mtu ? @mtu : 1492 %>
+
+# RFC 2516, paragraph 7 mandates that the following options MUST NOT be
+# requested and MUST be rejected if requested by the peer:
+# Address-and-Control-Field-Compression (ACFC)
+noaccomp
+# Asynchronous-Control-Character-Map (ACCM)
+default-asyncmap
+

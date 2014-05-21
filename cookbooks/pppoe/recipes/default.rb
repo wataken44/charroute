@@ -29,11 +29,21 @@ node[cookbook_name]['providers'].each do |name, provider|
 end
 
 # note
-# When another cookbook requires to modify pap-secrets, 
+# When another cookbook requires to modify chap/pap-secrets, 
 # this template should be moved to independent cookbook.
-# But because pap-secrets is required by only pppoe cookbook NOW,
+# But because chap/pap-secrets is required by only pppoe cookbook NOW,
 # this file is created at here
-template "/etc/ppp/pap-secrets" do
+target_file = nil
+source_file = nil
+if node[cookbook_name]['pap'] then
+    target_file = '/etc/ppp/pap-secrets'
+    source_file = 'pap-secrets.erb'
+else
+    target_file = '/etc/ppp/chap-secrets'
+    source_file = 'chap-secrets.erb'
+end
+
+template target_file do
     accounts = []
     node[cookbook_name]['providers'].map{ |name, provider|
         accounts << {
@@ -44,7 +54,7 @@ template "/etc/ppp/pap-secrets" do
         }
     }
 
-    source "pap-secrets.erb"
+    source source_file
     owner "root"
     group "root"
     mode 0600

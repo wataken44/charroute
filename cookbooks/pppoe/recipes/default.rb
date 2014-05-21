@@ -33,35 +33,37 @@ end
 # this template should be moved to independent cookbook.
 # But because chap/pap-secrets is required by only pppoe cookbook NOW,
 # this file is created at here
-target_file = nil
-source_file = nil
-if node[cookbook_name]['pap'] then
-    target_file = '/etc/ppp/pap-secrets'
-    source_file = 'pap-secrets.erb'
-else
-    target_file = '/etc/ppp/chap-secrets'
-    source_file = 'chap-secrets.erb'
-end
+{
+    'pap' => ['/etc/ppp/pap-secrets', 'pap-secrets.erb'],
+    'chap' => ['/etc/ppp/chap-secrets', 'chap-secrets.erb']
+}.each do |auth, arr|
+    target_file = arr[0]
+    source_file = arr[1] 
 
-template target_file do
-    accounts = []
-    node[cookbook_name]['providers'].map{ |name, provider|
-        accounts << {
-            'user' => provider['user'],
-            'server' => provider['server'],
-            'password' => provider['password'],
-            'acceptable-ip' => provider['acceptable-ip']
+    template target_file do
+        accounts = []
+        node[cookbook_name]['providers'].map{ |name, provider|
+            if provider['authentication'] == auth then
+                accounts << {
+                    'user' => provider['user'],
+                    'server' => provider['server'],
+                    'password' => provider['password'],
+                    'acceptable-ip' => provider['acceptable-ip']
+                }
+            end
         }
-    }
 
-    source source_file
-    owner "root"
-    group "root"
-    mode 0600
-    variables({
-            :accounts => accounts
-        })
-    action :create
+        source source_file
+        owner "root"
+        group "root"
+        mode 0600
+        variables({
+                :accounts => accounts
+            })
+        if accounts.size > 0 then
+            action :create
+        end
+    end
 end
 
 # a bit rude way... all network restart

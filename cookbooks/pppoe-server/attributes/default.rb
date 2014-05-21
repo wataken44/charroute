@@ -5,7 +5,7 @@ default[cookbook_name] = {
     'local-ip' => '',
     'remote-ip' => '',
     'server-options' => {
-        'require-chap' => false,
+        'require-chap' => true,
         'require-pap' => true
     }
 }

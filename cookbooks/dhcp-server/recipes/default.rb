@@ -27,7 +27,11 @@ template "/etc/dhcp/dhcpd.conf" do
     group "root"
     mode 0644
     variables({
-            :subnets => node[cookbook_name]['conf']['subnets']
+            :shared_networks => node[cookbook_name]['conf']['shared-networks']
         })
     action :create
+end
+
+service "isc-dhcp-server" do
+    action [:enable, :restart]
 end

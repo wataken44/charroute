@@ -14,18 +14,22 @@ ddns-update-style none;
 log-facility local7;
 
 # subnets 
-<% @subnets.each do |subnet| %>
-subnet <%= subnet['subnet'] %> netmask <%= subnet['netmask'] %> {
-  range <%= subnet['low-address'] %> <%= subnet['high-address'] %>;
-  <%= subnet['authoritative'] ? '' : 'not ' %>authoritative;
-  <% if subnet['default-lease-time'] %>default-lease-time <%= subnet['default-lease-time'] %>;<% end %>
-  <% if subnet['max-lease-time'] %>max-lease-time <%= subnet['max-lease-time'] %>;<% end %>
-<% if subnet['options'] %>
-<% options = subnet['options'] %>
-  <% if options['broadcast-address'] %>option broadcast-address <%= options['broadcast-address'] %>;<% end %>
-  <% if options['domain-name'] %>option domain-name "<%= options['domain-name'] %>";<% end %>
-  <% if options['domain-name-servers'] %>option domain-name-servers <%= options['domain-name-servers'].join(" ") %>;<% end %>
-  <% if options['routers'] %>option routers <%= options['routers'].join(" ") %>;<% end %>
-<% end %>
+<% @shared_networks.each do |name, param| %>
+shared-network <%= name %> {
+  <% param['subnets'].each do |subnet| %>
+  subnet <%= subnet['subnet'] %> netmask <%= subnet['netmask'] %> {
+    range <%= subnet['low-address'] %> <%= subnet['high-address'] %>;
+    <%= subnet['authoritative'] ? '' : 'not ' %>authoritative;
+    <% if subnet['default-lease-time'] %>default-lease-time <%= subnet['default-lease-time'] %>;<% end %>
+    <% if subnet['max-lease-time'] %>max-lease-time <%= subnet['max-lease-time'] %>;<% end %>
+    <% if subnet['options'] %>
+    <% options = subnet['options'] %>
+    <% if options['broadcast-address'] %>option broadcast-address <%= options['broadcast-address'] %>;<% end %>
+    <% if options['domain-name'] %>option domain-name "<%= options['domain-name'] %>";<% end %>
+    <% if options['domain-name-servers'] %>option domain-name-servers <%= options['domain-name-servers'].join(" ") %>;<% end %>
+    <% if options['routers'] %>option routers <%= options['routers'].join(" ") %>;<% end %>
+    <% end %>
+  }
+  <% end %>
 }
 <% end %>

@@ -1,0 +1,19 @@
+# ipsec.conf - strongSwan IPsec configuration file
+
+# basic configuration
+config setup
+<% if @interfaces %>    interfaces="<%= @interfaces %>"<% end %>
+    charonstart=yes
+    plutostart=yes
+
+# connections
+<% @connections.each do |conn, param| %>
+conn <%= conn %>
+    left=<%= param['left'] %>
+<% if param['left-subnet'] %>    leftsubnet=<%= param['left-subnet'] %><% end %>
+    right=<%= param['right'] %>
+<% if param['right-subnet'] %>    rightsubnet=<%= param['right-subnet'] %><% end %>
+    auto=<%= param['auto'] %>
+<% end %>
+
+include /var/lib/strongswan/ipsec.conf.inc

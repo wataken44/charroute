@@ -1,65 +1,25 @@
 [global]
-port = <%= @port %>
+port = <%= @port ? @port : 1701 %>
 auth file = /etc/xl2tpd/l2tp-secrets
-access control = <%= @access_control %>
+access control = <%= @access_control ? 'yes' : 'no' %>
 rand source = dev
+<% if @debug %>
 debug avp = <%= @debug['avp'] ? 'yes' : 'no'  %>
 debug network = <%= @debug['network'] ? 'yes' : 'no' %>
 debug state = <%= @debug['state'] ? 'yes' : 'no'  %>
 debug tunnel = <%= @debug['tunnel'] ? 'yes' : 'no' %>
+<% end %>
 
 <% @servers.each do |lns, param| %>
 [lns <%= lns %>]
+challenge = yes
 exclusive = no
+flow bit = yes
 ip range = <%= param['low-address'] %>-<%= param['high-address'] %>
 local ip = <%= param['local-ip'] %>
+name = <%= param['hostname'] %>
+pppoptfile = /etc/ppp/options.xl2tpd
+refuse pap = yes
+require authentication = yes
 require chap = yes
-refuse pap = no
 <% end %>
-; [lns default]							; Our fallthrough LNS definition
-; local ip = 192.168.1.2				; * Our local IP to use
-; length bit = yes						; * Use length bit in payload?
-; require chap = yes					; * Require CHAP auth. by peer
-; refuse pap = yes						; * Refuse PAP authentication
-; refuse chap = no						; * Refuse CHAP authentication
-; refuse authentication = no			; * Refuse authentication altogether
-; require authentication = yes			; * Require peer to authenticate
-; unix authentication = no				; * Use /etc/passwd for auth.
-; name = myhostname						; * Report this as our hostname
-; ppp debug = no						; * Turn on PPP debugging
-; pppoptfile = /etc/ppp/options.l2tpd.lns	; * ppp options file
-; call rws = 10							; * RWS for call (-1 is valid)
-; tunnel rws = 4						; * RWS for tunnel (must be > 0)
-; flow bit = yes						; * Include sequence numbers
-; challenge = yes						; * Challenge authenticate peer ; 
-; rx bps = 10000000				; Receive tunnel speed
-; tx bps = 10000000				; Transmit tunnel speed
-; bps = 100000					; Define both receive and transmit speed in one option
-
-; [lac marko]							; Example VPN LAC definition
-; lns = lns.marko.net					; * Who is our LNS?
-; lns = lns2.marko.net					; * A backup LNS (not yet used)
-; redial = yes							; * Redial if disconnected?
-; redial timeout = 15					; * Wait n seconds between redials
-; max redials = 5						; * Give up after n consecutive failures
-; hidden bit = yes						; * User hidden AVP's?
-; local ip = 192.168.1.1				; * Force peer to use this IP for us
-; remote ip = 192.168.1.2				; * Force peer to use this as their IP
-; length bit = no						; * Use length bit in payload?
-; require pap = no						; * Require PAP auth. by peer
-; require chap = yes					; * Require CHAP auth. by peer
-; refuse pap = yes						; * Refuse PAP authentication
-; refuse chap = no						; * Refuse CHAP authentication
-; refuse authentication = no			; * Refuse authentication altogether
-; require authentication = yes			; * Require peer to authenticate
-; name = marko							; * Report this as our hostname
-; ppp debug = no						; * Turn on PPP debugging
-; pppoptfile = /etc/ppp/options.l2tpd.marko	; * ppp options file for this lac
-; call rws = 10							; * RWS for call (-1 is valid)
-; tunnel rws = 4						; * RWS for tunnel (must be > 0)
-; flow bit = yes						; * Include sequence numbers
-; challenge = yes						; * Challenge authenticate peer 
-;
-; [lac cisco]							; Another quick LAC
-; lns = cisco.marko.net					; * Required, but can take from default
-; require authentication = yes			

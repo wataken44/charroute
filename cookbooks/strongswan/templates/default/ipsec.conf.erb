@@ -1,4 +1,4 @@
-# ipsec.conf - strongSwan IPsec configuration file
+t# ipsec.conf - strongSwan IPsec configuration file
 
 # basic configuration
 config setup
@@ -13,7 +13,7 @@ conn <%= conn %>
 <% if param['left-subnet'] %>    leftsubnet=<%= param['left-subnet'] %><% end %>
     right=<%= param['right'] %>
 <% if param['right-subnet'] %>    rightsubnet=<%= param['right-subnet'] %><% end %>
-    auto=<%= param['auto'] %>
+<% if param['auto'] %>    auto=<%= param['auto'] %><% end %>
 <% end %>
 
 include /var/lib/strongswan/ipsec.conf.inc

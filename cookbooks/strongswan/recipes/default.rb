@@ -11,16 +11,28 @@ package "strongswan"
 
 template "/etc/ipsec.conf" do
     source "ipsec.conf.erb"
-    ownwer "root"
+    owner "root"
     group "root"
     mode 0644
     variables({
-            :interfaces => node[cookbook_name]['interfaces'],
-            :connections => node[cookbook_name]['connections']
+            :interfaces => node[cookbook_name]['conf']['interfaces'],
+            :connections => node[cookbook_name]['conf']['connections']
         })
 
     action :create
 end
+
+template "/etc/ipsec.secrets" do
+    source "ipsec.secrets.erb"
+    owner "root"
+    group "root"
+    mode 0600 
+    variables({
+            :secrets => node[cookbook_name]['secrets']['secrets']
+        })
+    action :create
+end
+
 
 service "ipsec" do
     action [:enable, :restart]

@@ -1,10 +1,10 @@
 
-cookbook_name = "dhcp-server"
+cookbook_name = "isc-dhcp-server"
 
 default[cookbook_name]['init'] = {
     'options' => nil,
     'interfaces' => []
 }
 default[cookbook_name]['conf'] = {
-    'subnets' => []
+    'shared-networks' => {}
 }

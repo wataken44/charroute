@@ -1,19 +1,45 @@
-t# ipsec.conf - strongSwan IPsec configuration file
+# ipsec.conf - strongSwan IPsec configuration file
 
 # basic configuration
 config setup
-<% if @interfaces %>    interfaces="<%= @interfaces %>"<% end %>
+<% if @interfaces -%>
+    interfaces="<%= @interfaces %>"
+<% end -%>
     charonstart=yes
     plutostart=yes
 
 # connections
 <% @connections.each do |conn, param| %>
 conn <%= conn %>
+    authby=<%= param['authby'] %>
     left=<%= param['left'] %>
-<% if param['left-subnet'] %>    leftsubnet=<%= param['left-subnet'] %><% end %>
+<% if param['left-subnet'] -%>
+    leftsubnet=<%= param['left-subnet'] %>
+<% end -%>
     right=<%= param['right'] %>
-<% if param['right-subnet'] %>    rightsubnet=<%= param['right-subnet'] %><% end %>
-<% if param['auto'] %>    auto=<%= param['auto'] %><% end %>
-<% end %>
+<% if param['right-subnet'] -%>
+    rightsubnet=<%= param['right-subnet'] %>
+<% end -%>
+<% if param['auto'] -%>
+    auto=<%= param['auto'] %>
+<% end -%>
+<% if param['esp'] -%>
+    esp=<%= param['esp'] %>
+<% end -%>
+<% if param['ike'] -%>
+    ike=<%= param['ike'] %>
+<% end -%>
+<% if param['dpdaction'] -%>
+    dpdaction=<%= param['dpdaction'] %>
+<% end -%>
+<% if param['dpddelay'] -%>
+    dpddelay=<%= param['dpddelay'] %>
+<% end -%>
+<% if param['dpdtimeout'] -%>
+    dpdtimeout=<%= param['dpdtimeout'] %>
+<% end -%>
+    rekey=<%= param['rekey'] ? 'yes' : 'no' %>
+    pfs=<%= param['pfs'] ? 'yes' : 'no' %>
+<% end -%>
 
 include /var/lib/strongswan/ipsec.conf.inc

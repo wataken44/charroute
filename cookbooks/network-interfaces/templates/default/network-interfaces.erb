@@ -5,11 +5,17 @@ auto lo
 iface lo inet loopback
 
 <% @interfaces.each do |iface, config| %>
-<%if config['auto'] %>auto <%= iface %><% end %>
-<%if config['allow-hotplug'] %>allow-hotplug <%= iface %><% end %>
-iface <%= iface %> inet <%= config["method"] %>
-<% (config["options"] || {}).each do |k,v| %>
+<% if config['auto'] -%>
+auto <%= iface %>
+<% end -%>
+<% if config['allow-hotplug'] %>
+allow-hotplug <%= iface %>
+<% end -%>
+<% (config["addresses"] || []).each do |address| %>
+iface <%= iface %> <%= address["family"] || "inet" %> <%= address["method"] %>
+<% (address["options"] || {}).each do |k,v| %>
     <%= k %> <%= v %>
+<% end %>
 <% end %>
 
 <% end %>

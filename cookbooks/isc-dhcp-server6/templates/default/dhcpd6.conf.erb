@@ -1,0 +1,38 @@
+#
+# Sample configuration file for ISC dhcpd for Debian
+#
+
+# these parameters should be overwritten at subnet/shared-network
+default-lease-time 600;
+max-lease-time 7200;
+not authoritative;
+
+# ddns-update-style should be none for DHCPv2
+ddns-update-style none;
+
+# log-facility(also syslog.conf should be updated, but currently not supported)
+log-facility local7;
+
+# subnets 
+<% @shared_networks.each do |name, param| %>
+shared-network <%= name %> {
+  <% param['subnets6'].each do |subnet| %>
+  subnet6 <%= subnet['subnet6'] %> {
+    range6 <%= subnet['low-address'] %> <%= subnet['high-address'] %>;
+    <%= subnet['authoritative'] ? '' : 'not ' %>authoritative;
+<% if subnet['default-lease-time'] -%>
+    default-lease-time <%= subnet['default-lease-time'] %>;
+<% end -%>
+<% if subnet['max-lease-time'] -%>
+    max-lease-time <%= subnet['max-lease-time'] %>;
+<% end -%>
+    <% if subnet['options'] %>
+    <% options = subnet['options'] %>
+<% if options['dhcp6.name-servers'] -%>
+    option dhcp6.name-servers <%= options['dhcp6.name-servers'].join(" ") %>;
+<% end -%>
+    <% end %>
+  }
+  <% end %>
+}
+<% end %>

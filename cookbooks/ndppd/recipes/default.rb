@@ -9,23 +9,34 @@
 
 workdir = Chef::Config[:file_cache_path] + '/' + cookbook_name().to_s
 
-directory workdir do
-    mode 0777
-    action :create
-end 
-
 arch = {
     "x86_64" => "amd64",
     "x86" => "i386",
 }[node["kernel"]["machine"]]
 
-remote_file workdir + "/ndppd_0.2.3-1_#{arch}.deb" do 
+package_name = "ndppd_0.2.3-1_#{arch}.deb"
+filename = workdir + "/" + package_name
+
+directory workdir do
+    mode 0777
+    action :create
+end 
+
+remote_file filename do 
     source "http://priv.nu/projects/ndppd/files/ndppd_0.2.3-1_#{arch}.deb"
     owner "root"
     group "root"
     mode 0644
 
     action :create
+end
+
+package package_name do
+    provider Chef::Provider::Package::Dpkg
+    source filename
+
+    action :install
+    notifies :create, 'template[/etc/ndppd.conf]'
 end
 
 template "/etc/ndppd.conf" do
@@ -39,13 +50,16 @@ template "/etc/ndppd.conf" do
             :proxies => node[cookbook_name]['proxies']
         })            
 
-    action :create
+    action :nothing
+    if node[cookbook_name]["enable"] then
+        notifies :enable, 'service[ndppd]'
+        notifies :restart, 'service[ndppd]'
+    else
+        notifies :disable, 'service[ndppd]'
+        notifies :stop, 'service[ndppd]'
+    end
 end
 
 service "ndppd" do
-    if node[cookbook_name]["enable"] then
-        action [:enable, :restart]
-    else
-        action [:disable, :stop]
-    end
+    action :nothing
 end

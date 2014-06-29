@@ -15,18 +15,34 @@ apt_package "iptables-persistent" do
     action :install
 end
 
-template "/etc/iptables/rules.v4" do
-    source "rules.v4.erb"
-    owner "root"
-    group "root"
-    mode 0644
-    variables({
-            :filter => node[cookbook_name]["filter"],
-            :nat => node[cookbook_name]["nat"]
-        })
-    action :create
+if node[cookbook_name]["v4"] then
+    template "/etc/iptables/rules.v4" do
+        source "rules.erb"
+        owner "root"
+        group "root"
+        mode 0644
+        variables({
+                :filter => node[cookbook_name]["v4"]["filter"],
+                :nat => node[cookbook_name]["v4"]["nat"]
+            })
+        action :create
+    end
+end
+
+if node[cookbook_name]["v6"] then
+    template "/etc/iptables/rules.v6" do
+        source "rules.erb"
+        owner "root"
+        group "root"
+        mode 0644
+        variables({
+                :filter => node[cookbook_name]["v6"]["filter"],
+                :mangle => node[cookbook_name]["v6"]["mangle"]
+            })
+        action :create
+    end
 end
 
 service "iptables-persistent" do
-    action :restart
+    action [:enable, :restart]
 end

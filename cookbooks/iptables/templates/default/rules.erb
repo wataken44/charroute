@@ -1,7 +1,8 @@
 <% 
   [
     [@filter, "filter", ["INPUT", "OUTPUT", "FORWARD"] ],
-    [@nat, "nat", ["PREROUTING", "OUTPUT", "POSTROUTING"] ]
+    [@nat, "nat", ["PREROUTING", "OUTPUT", "POSTROUTING"] ],
+    [@mangle, "mangle", ["PREROUTING", "OUTPUT", "POSTROUTING"] ]
   ].each do |arr| # 1st nest 
     table = arr[0]
     table_name = arr[1]

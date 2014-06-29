@@ -27,3 +27,25 @@ remote_file workdir + "/ndppd_0.2.3-1_#{arch}.deb" do
 
     action :create
 end
+
+template "/etc/ndppd.conf" do
+    source "ndppd.conf.erb"
+    owner "root"
+    group "root"
+    mode 0644
+
+    variables({
+            :route_ttl => node[cookbook_name]['route-ttl'],
+            :proxies => node[cookbook_name]['proxies']
+        })            
+
+    action :create
+end
+
+service "ndppd" do
+    if node[cookbook_name]["enable"] then
+        action [:enable, :restart]
+    else
+        action [:disable, :stop]
+    end
+end

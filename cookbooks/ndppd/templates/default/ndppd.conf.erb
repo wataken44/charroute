@@ -1,0 +1,18 @@
+
+<% if @route_ttl %> route-ttl <%= @route_ttl %><% end %>
+
+<% @proxies.each do |iface, param| %>
+proxy <%= iface %> {
+<% if param['router'] -%>
+  router <%= param['router'] %>
+<% end -%>
+<% if param['timeout'] -%>
+  timeout <%= param['timeout'] %>
+<% end -%>
+  <% param['rules'].each do |subnet, method| -%>
+  rule <%= subnet %> {
+    <%= method %>
+  }
+  <% end -%>
+}
+<% end %>

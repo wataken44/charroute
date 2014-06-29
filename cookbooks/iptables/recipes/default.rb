@@ -11,7 +11,13 @@ apt_package "iptables" do
     action :install
 end
 
-apt_package "iptables-persistent" do
+persistent_package = {
+    0 => "netfilter-persistent", # jessie/sid
+    7 => "iptables-persistent",  # wheezy
+    8 => "netfilter-persistent"  # jessie(for future)
+}[node["platform_version"].to_i]
+
+apt_package persistent_package do
     action :install
 end
 
@@ -43,6 +49,6 @@ if node[cookbook_name]["v6"] then
     end
 end
 
-service "iptables-persistent" do
+service persistent_package do
     action [:enable, :restart]
 end

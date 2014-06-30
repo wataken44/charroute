@@ -1,0 +1,20 @@
+
+<% @interfaces.each do |iface, param| %>
+interface <%= iface %> { 
+<% options=param["options"]||{} -%>
+  AdvSendAdvert <%= options["adv-send-advert"] ? "on" : "off" %>;
+  AdvManagedFlag <%= options["adv-managed-flag"] ? "on" : "off" %>;
+  AdvOtherConfigFlag <%= options["adv-other-config-flag"] ? "on" : "off" %>;
+  AdvLinkMTU <%= options["adv-link-mtu"] || "0" %>;
+
+<% param["prefixes"].each do |prefix, popt| %>
+  prefix <%= prefix %> {
+    AdvOnLink <%= (popt["adv-on-link"] != false) ? "on" : "off" %>;
+    AdvAutonomous <%= (popt["adv-autonomous"] != false) ? "on" : "off" %>;
+    AdvRouterAddr <%= popt["adv-router-addr"] ? "on" : "off" %>;
+  };
+  
+<% end %>
+};
+
+<% end %>

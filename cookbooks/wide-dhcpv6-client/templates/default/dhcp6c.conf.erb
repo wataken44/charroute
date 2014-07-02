@@ -1,0 +1,39 @@
+<% @interfaces.each do |iface, param| %>
+interface <%= iface %> {
+<% if param['information-only'] -%>
+  information-only;
+<% end -%>
+<% if param['script'] -%>
+  script "<%= param['script'] %>";
+<% end -%>
+
+<% if param['send-options']['rapid-commit'] -%>
+  send rapid-commit;
+<% end -%>
+<% ["ia-pd", "ia-na"].each do |iaopt| -%>
+<% if param['send-options'][iaopt] -%>
+  send <%= iaopt %> <%= param['send-options'][iaopt] %>;
+<% end -%>
+<% end -%>
+<% ["domain-name-servers", "domain-name","ntp-servers"].each do |opt| -%>
+<% if param['request-options'][opt] -%>
+  request <%= opt %>;
+<% end -%>
+<% end -%>
+};
+<% end %>
+
+<% @identity_associations.each do |iaid, iaparam| -%>
+<% if iaparam['type'] == 'pd' -%>
+id-assoc pd <%= iaid %> {
+<% pifparam = iaparam['prefix-interface'] -%>
+  prefix-interface <%= pifparam['interface'] %> {
+<% ["sla-id", "sla-len", "ifid"].each do |opt| -%>
+<% if pifparam[opt] -%>
+    <%= opt %> <%= pifparam[opt] %>;
+<% end -%>
+<% end -%>
+  };
+};
+<% end -%>
+<% end %>

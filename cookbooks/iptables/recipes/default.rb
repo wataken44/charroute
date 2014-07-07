@@ -43,7 +43,8 @@ if node[cookbook_name]["v6"] then
         mode 0644
         variables({
                 :filter => node[cookbook_name]["v6"]["filter"],
-                :mangle => node[cookbook_name]["v6"]["mangle"]
+                :mangle => node[cookbook_name]["v6"]["mangle"],
+                :nat => node[cookbook_name]["v6"]["nat"]
             })
         action :create
     end

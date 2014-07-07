@@ -28,6 +28,8 @@ remote_file filename do
     group "root"
     mode 0644
 
+    not_if "test -f #{filename}"
+
     action :create
 end
 

@@ -49,16 +49,14 @@ template "/etc/dhcp/dhcpd6.conf" do
             :shared_networks => node[cookbook_name]['conf']['shared-networks']
         })
     action :nothing
-
-    if enabled then
-        notifies :enable, 'service[isc-dhcp-server6]'
-        notifies :restart, 'service[isc-dhcp-server6]'
-    else
-        notifies :disable, 'service[isc-dhcp-server6]'
-        notifies :stop, 'service[isc-dhcp-server6]'
-    end    
 end
 
-service "isc-dhcp-server6" do
-    action :nothing
-end    
+if enabled then
+    service "isc-dhcp-server6" do
+        action [:enable, :restart]
+    end
+else
+    service "isc-dhcp-server6" do
+        action [:disable, :stop]
+    end
+end

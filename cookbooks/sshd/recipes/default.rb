@@ -26,5 +26,5 @@ template "/etc/ssh/sshd_config" do
 end
 
 service "ssh" do
-    action :restart
+    action [:enable, :restart]
 end

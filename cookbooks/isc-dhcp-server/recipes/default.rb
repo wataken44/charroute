@@ -9,6 +9,9 @@
 
 package "isc-dhcp-server"
 
+service_action =
+    node[cookbook_name]['enable'] ? [:restart, :enable] : [:stop, :disable]
+
 template "/etc/default/isc-dhcp-server" do
     source "isc-dhcp-server.erb"
     owner "root"
@@ -19,6 +22,7 @@ template "/etc/default/isc-dhcp-server" do
             :options => node[cookbook_name]['init']['options']
         })
     action :create
+    notifies service_action, "service[isc-dhcp-server]", :delayed
 end
 
 template "/etc/dhcp/dhcpd.conf" do
@@ -30,8 +34,10 @@ template "/etc/dhcp/dhcpd.conf" do
             :shared_networks => node[cookbook_name]['conf']['shared-networks']
         })
     action :create
+    notifies service_action, "service[isc-dhcp-server]", :delayed
 end
 
 service "isc-dhcp-server" do
-    action [:enable, :restart]
+    ignore_failure true
+    action service_action
 end

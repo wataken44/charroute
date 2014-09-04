@@ -12,14 +12,16 @@ debug tunnel = <%= @debug['tunnel'] ? 'yes' : 'no' %>
 
 <% @servers.each do |lns, param| %>
 [lns <%= lns %>]
-challenge = yes
+challenge = <%= param['challenge'] ? 'yes' : 'no' %>
 exclusive = no
 flow bit = yes
+length bit = yes
 ip range = <%= param['low-address'] %>-<%= param['high-address'] %>
 local ip = <%= param['local-ip'] %>
-name = <%= param['hostname'] %>
+<% if param['local-low-address'] %>local-ip-range = <%= param['local-low-address'] =%>-<%= param['local-high-address'] =%><% end %>
 pppoptfile = /etc/ppp/options.xl2tpd
 refuse pap = yes
 require authentication = yes
 require chap = yes
+<%if param['hostname'] %>hostname = <%= param['hostname'] %><% end %>
 <% end %>

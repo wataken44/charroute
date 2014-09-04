@@ -46,8 +46,16 @@ template "/etc/ppp/options.xl2tpd" do
     group "root"
     mode 0644
     variables({
+            :crtscts => options['crtscts'],
+            :debug => options['debug'],
+            :ipcp_accept_local => options['ipcp-accept-local'],
+            :ipcp_accept_remote => options['ipcp-accept-remote'],
+            :lock => options['lock'],
             :mru => options['mru'],
-            :mtu => options['mtu']
+            :ms_dns => options['ms-dns'],
+            :mtu => options['mtu'],
+            :noccp => options['noccp'],
+            :proxyarp => options['proxyarp'],
         })
   
     action :create

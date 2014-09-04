@@ -1,3 +1,4 @@
+<% if @auth %>auth<% end %>
 refuse-pap
 require-chap
 refuse-mschap
@@ -5,3 +6,11 @@ require-mschap-v2
 nodefaultroute
 <% if @mru %>mru <%= @mru %><% end %>
 <% if @mtu %>mtu <%= @mtu %><% end %>
+<% if @ipcp_accept_local %>ipcp-accept-local<% end %>
+<% if @ipcp_accept_remote %>ipcp-accept-remote<% end %>
+<% if @noccp %>noccp<% end %>
+<% if @crtscts %>crtscts<% end %>
+<% if @ms_dns %>ms-dns <%= @ms_dns %><% end %>
+<% if @debug %>debug<% end %>
+<% if @lock %>lock<% end %>
+<% if @proxyarp %>proxyarp<% end %>

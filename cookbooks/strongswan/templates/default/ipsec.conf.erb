@@ -5,8 +5,6 @@ config setup
 <% if @interfaces -%>
     interfaces="<%= @interfaces %>"
 <% end -%>
-    charonstart=yes
-    plutostart=yes
 
 # connections
 <% @connections.each do |conn, param| %>
@@ -39,7 +37,6 @@ conn <%= conn %>
     dpdtimeout=<%= param['dpdtimeout'] %>
 <% end -%>
     rekey=<%= param['rekey'] ? 'yes' : 'no' %>
-    pfs=<%= param['pfs'] ? 'yes' : 'no' %>
 <% end -%>
 
 include /var/lib/strongswan/ipsec.conf.inc

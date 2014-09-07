@@ -7,6 +7,8 @@
 # All rights reserved - Do Not Redistribute
 #
 
+include_recipe "ppp-secrets::default"
+
 package "pppoe"
 
 node[cookbook_name]['providers'].each do |name, provider|
@@ -25,44 +27,6 @@ node[cookbook_name]['providers'].each do |name, provider|
                 :mtu => provider['mtu']
             })
         action :create
-    end
-end
-
-# note
-# When another cookbook requires to modify chap/pap-secrets, 
-# this template should be moved to independent cookbook.
-# But because chap/pap-secrets is required by only pppoe cookbook NOW,
-# this file is created at here
-{
-    'pap' => ['/etc/ppp/pap-secrets', 'pap-secrets.erb'],
-    'chap' => ['/etc/ppp/chap-secrets', 'chap-secrets.erb']
-}.each do |auth, arr|
-    target_file = arr[0]
-    source_file = arr[1] 
-
-    template target_file do
-        accounts = []
-        node[cookbook_name]['providers'].map{ |name, provider|
-            if provider['authentication'] == auth then
-                accounts << {
-                    'user' => provider['user'],
-                    'server' => provider['server'],
-                    'password' => provider['password'],
-                    'acceptable-ip' => provider['acceptable-ip']
-                }
-            end
-        }
-
-        source source_file
-        owner "root"
-        group "root"
-        mode 0600
-        variables({
-                :accounts => accounts
-            })
-        if accounts.size > 0 then
-            action :create
-        end
     end
 end
 

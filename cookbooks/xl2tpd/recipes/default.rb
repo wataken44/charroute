@@ -7,6 +7,8 @@
 # All rights reserved - Do Not Redistribute
 #
 
+include_recipe "ppp-secrets::default"
+
 package "xl2tpd"
 
 conf = node[cookbook_name]['conf']
@@ -54,6 +56,7 @@ template "/etc/ppp/options.xl2tpd" do
             :mru => options['mru'],
             :ms_dns => options['ms-dns'],
             :mtu => options['mtu'],
+            :name => options['name'],
             :noccp => options['noccp'],
             :proxyarp => options['proxyarp'],
         })

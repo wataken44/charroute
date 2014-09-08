@@ -24,6 +24,7 @@ bash 'install.sh' do
     code "sh %s/scripts/install.sh" % workdir
 
     notifies :create, 'template[/etc/default/isc-dhcp-server6]'
+    notifies :create, 'template[/etc/dhcp/dhcpd6.conf]'
 end
 
 template "/etc/default/isc-dhcp-server6" do
@@ -35,9 +36,7 @@ template "/etc/default/isc-dhcp-server6" do
             :interfaces => node[cookbook_name]['init']['interfaces'],
             :options => node[cookbook_name]['init']['options']
         })
-    action :nothing
-
-    notifies :create, 'template[/etc/dhcp/dhcpd6.conf]'
+    action :create
 end
 
 template "/etc/dhcp/dhcpd6.conf" do
@@ -48,7 +47,7 @@ template "/etc/dhcp/dhcpd6.conf" do
     variables({
             :shared_networks => node[cookbook_name]['conf']['shared-networks']
         })
-    action :nothing
+    action :create
 end
 
 if enabled then

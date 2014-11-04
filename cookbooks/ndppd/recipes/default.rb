@@ -7,6 +7,10 @@
 # All rights reserved - Do Not Redistribute
 #
 
+service_action = 
+    node['enable'] ? [:restart, :enable] : [:stop, :disable]
+
+
 workdir = Chef::Config[:file_cache_path] + '/' + cookbook_name().to_s
 
 arch = {
@@ -53,15 +57,9 @@ template "/etc/ndppd.conf" do
         })            
 
     action :nothing
-    if node[cookbook_name]["enable"] then
-        notifies :enable, 'service[ndppd]'
-        notifies :restart, 'service[ndppd]'
-    else
-        notifies :disable, 'service[ndppd]'
-        notifies :stop, 'service[ndppd]'
-    end
+    notifies service_action, 'service[ndppd]', :delayed
 end
 
 service "ndppd" do
-    action :nothing
+    action service_action
 end
